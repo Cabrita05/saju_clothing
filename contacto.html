@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>SAJU · Pedidos al por mayor y personalizados</title>
   <meta name="description" content="Saju Clothing como proveedor: pijamas al por mayor y pedidos personalizados, hechos en Colombia.">
   <link rel="icon" href="assets/logo-saju.png">
@@ -59,24 +61,24 @@
         <div class="form__row">
           <div class="field">
             <label for="nombre">Tu nombre</label>
-            <input id="nombre" name="nombre" type="text" autocomplete="name" required aria-describedby="nombre-error">
+            <input id="nombre" name="nombre" type="text" maxlength="80" autocomplete="name" required aria-describedby="nombre-error">
             <p class="field__error" id="nombre-error" hidden>Escribe tu nombre para saber con quién hablamos.</p>
           </div>
           <div class="field">
             <label for="negocio">Tienda o negocio <span class="optional">opcional</span></label>
-            <input id="negocio" name="negocio" type="text" autocomplete="organization">
+            <input id="negocio" name="negocio" type="text" maxlength="80" autocomplete="organization">
           </div>
         </div>
 
         <div class="form__row">
           <div class="field">
             <label for="ciudad">Ciudad de entrega</label>
-            <input id="ciudad" name="ciudad" type="text" autocomplete="address-level2" required aria-describedby="ciudad-error">
+            <input id="ciudad" name="ciudad" type="text" maxlength="60" autocomplete="address-level2" required aria-describedby="ciudad-error">
             <p class="field__error" id="ciudad-error" hidden>Dinos la ciudad para calcular el envío.</p>
           </div>
           <div class="field">
             <label for="cantidad">Cantidad aproximada</label>
-            <input id="cantidad" name="cantidad" type="number" min="1" inputmode="numeric" placeholder="Ej. 24" required aria-describedby="cantidad-error">
+            <input id="cantidad" name="cantidad" type="number" min="1" max="100000" step="1" inputmode="numeric" placeholder="Ej. 24" required aria-describedby="cantidad-error">
             <p class="field__error" id="cantidad-error" hidden>Indica cuántas prendas necesitas, aunque sea un aproximado.</p>
           </div>
         </div>
@@ -94,7 +96,7 @@
 
         <div class="field">
           <label for="detalles">Detalles <span class="optional">opcional</span></label>
-          <textarea id="detalles" name="detalles" rows="4" placeholder="Tallas, colores, telas, fecha en que lo necesitas, si quieres marquilla propia…"></textarea>
+          <textarea id="detalles" name="detalles" rows="4" maxlength="600" placeholder="Tallas, colores, telas, fecha en que lo necesitas, si quieres marquilla propia…"></textarea>
         </div>
 
         <button class="btn btn--rose btn--lg" type="submit">Preparar solicitud</button>
@@ -107,7 +109,7 @@
         <pre class="result__msg" id="resultado-texto"></pre>
         <p class="form__note" id="resultado-ayuda"></p>
         <div class="result__actions">
-          <a class="btn btn--rose btn--lg" id="resultado-enviar" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+          <a class="btn btn--rose btn--lg" id="resultado-enviar" target="_blank" rel="noopener noreferrer">Enviar por WhatsApp</a>
           <button class="btn btn--ghost btn--lg" id="resultado-copiar" type="button">Copiar texto</button>
         </div>
         <button class="cart__clear" id="resultado-editar" type="button">Editar solicitud</button>

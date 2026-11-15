@@ -157,6 +157,10 @@ h2 em { text-transform: none; letter-spacing: 0; }
 .card__price { font-size: .78rem; opacity: .8; }
 .card .btn { background: #fff; color: var(--ink); font-size: .72rem; padding: .55em 1em; }
 .collection__note { text-align: center; font-size: .85rem; opacity: .9; margin-top: 18px; padding: 0 var(--pad); }
+.card:nth-child(2) { animation-delay: 60ms; }
+.card:nth-child(3) { animation-delay: 120ms; }
+.card:nth-child(4) { animation-delay: 180ms; }
+.card:nth-child(n+5) { animation-delay: 240ms; }
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
 
 /* ---------- historia ---------- */

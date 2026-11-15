@@ -10,12 +10,19 @@ function marcar(campo, idError, hayError) {
   return hayError;
 }
 
+// Los límites del HTML se pueden saltar, así que se repiten aquí.
+const recortar = (campo, max) => campo.value.replace(/\s+/g, " ").trim().slice(0, max);
+function cantidadValida() {
+  const n = Number(form.cantidad.value);
+  return Number.isInteger(n) && n >= 1 && n <= 100000;
+}
+
 function validar() {
   const prendas = form.querySelectorAll('[name="prendas"]:checked').length;
   const errores = [
     marcar(form.nombre, "nombre-error", !form.nombre.value.trim()) && form.nombre,
     marcar(form.ciudad, "ciudad-error", !form.ciudad.value.trim()) && form.ciudad,
-    marcar(form.cantidad, "cantidad-error", !(Number(form.cantidad.value) >= 1)) && form.cantidad,
+    marcar(form.cantidad, "cantidad-error", !cantidadValida()) && form.cantidad,
     marcar(null, "prendas-error", prendas === 0) && form.querySelector('[name="prendas"]'),
   ].filter(Boolean);
   if (errores.length) errores[0].focus();
@@ -24,15 +31,15 @@ function validar() {
 
 function mensaje() {
   const prendas = [...form.querySelectorAll('[name="prendas"]:checked')].map((c) => c.value).join(", ");
-  const negocio = form.negocio.value.trim();
-  const detalles = form.detalles.value.trim();
+  const negocio = recortar(form.negocio, 80);
+  const detalles = recortar(form.detalles, 600);
   return [
     "¡Hola Saju! Quiero cotizar un pedido especial:",
     "",
     `• Tipo: ${form.tipo.value}`,
-    `• Nombre: ${form.nombre.value.trim()}`,
+    `• Nombre: ${recortar(form.nombre, 80)}`,
     negocio ? `• Negocio: ${negocio}` : null,
-    `• Ciudad de entrega: ${form.ciudad.value.trim()}`,
+    `• Ciudad de entrega: ${recortar(form.ciudad, 60)}`,
     `• Prendas: ${prendas}`,
     `• Cantidad aproximada: ${Number(form.cantidad.value)}`,
     detalles ? `• Detalles: ${detalles}` : null,

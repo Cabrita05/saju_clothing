@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>SAJU · Pijamas hechas en Colombia</title>
   <meta name="description" content="Saju Clothing: pijamas hechas en Colombia. Pantalones, camisas y togas con envíos a todo el país.">
   <link rel="icon" href="assets/logo-saju.png">
@@ -25,7 +27,7 @@
       <a href="contacto.html">Mayoristas</a>
     </nav>
     <div class="nav__actions">
-      <a class="btn btn--dark nav__write" href="https://wa.link/e0p7is" target="_blank" rel="noopener">Escríbenos</a>
+      <a class="btn btn--dark nav__write" href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer">Escríbenos</a>
       <button class="cart-btn" id="abrir-carrito" aria-label="Abrir carrito">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
         <span class="cart-btn__count" id="carrito-cuenta" hidden>0</span>
@@ -47,7 +49,7 @@
     <div class="cart__foot" id="carrito-pie">
       <div class="cart__total"><span>Total estimado</span><strong id="carrito-total"></strong></div>
       <p class="cart__hint" id="carrito-ayuda"></p>
-      <a class="btn btn--rose btn--lg" id="carrito-enviar" target="_blank" rel="noopener">Cotizar por WhatsApp</a>
+      <a class="btn btn--rose btn--lg" id="carrito-enviar" target="_blank" rel="noopener noreferrer">Cotizar por WhatsApp</a>
       <button class="cart__clear" id="carrito-vaciar">Vaciar carrito</button>
     </div>
   </dialog>
@@ -146,8 +148,8 @@
     <p class="footer__script">dulces sueños</p>
     <h2>¿Lista para estrenar?</h2>
     <div class="footer__actions">
-      <a class="btn btn--rose btn--lg" href="https://wa.link/e0p7is" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-      <a class="btn btn--ghost btn--lg" href="https://www.instagram.com/saju_clothing" target="_blank" rel="noopener">@saju_clothing</a>
+      <a class="btn btn--rose btn--lg" href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp</a>
+      <a class="btn btn--ghost btn--lg" href="https://www.instagram.com/saju_clothing" target="_blank" rel="noopener noreferrer">@saju_clothing</a>
     </div>
     <p class="footer__small">SAJU · Hecho en Colombia · Versión beta</p>
   </footer>

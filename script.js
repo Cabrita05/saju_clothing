@@ -43,6 +43,9 @@ const SILUETAS = {
 
 const $ = (id) => document.getElementById(id);
 const pesos = (n) => "$" + n.toLocaleString("es-CO");
+const MAX_UNIDADES = 99; // tope por prenda, para que nadie arme pedidos absurdos
+// Convierte un texto en HTML seguro antes de insertarlo en la página.
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const buscar = (id) => {
   const [cat, i] = id.split("-");
   const p = PRODUCTOS[cat] && PRODUCTOS[cat][Number(i)];
@@ -59,15 +62,15 @@ function pintarColeccion(cat) {
   track.innerHTML = PRODUCTOS[cat]
     .map((p, i) => {
       const foto = p.foto
-        ? `<img src="${p.foto}" alt="${p.nombre}" loading="lazy">`
+        ? `<img src="${esc(p.foto)}" alt="${esc(p.nombre)}" loading="lazy">`
         : `${SILUETAS[cat]}<span class="card__chip">Muy pronto</span>`;
-      const tallas = TALLAS.map((t) => `<button data-talla="${t}" aria-label="Agregar talla ${t}">${t}</button>`).join("");
-      return `<li class="card" data-id="${cat}-${i}" style="animation-delay:${i * 60}ms">
+      const tallas = TALLAS.map((t) => `<button data-talla="${esc(t)}" aria-label="Agregar talla ${esc(t)}">${esc(t)}</button>`).join("");
+      return `<li class="card" data-id="${cat}-${i}">
         <div class="card__photo">${foto}
           <div class="card__sizes"><span>Elige tu talla</span><div>${tallas}</div></div>
         </div>
         <div class="card__info">
-          <div><p class="card__name">${p.nombre}</p><p class="card__price">${p.precio == null ? "Precio por definir" : pesos(p.precio)}</p></div>
+          <div><p class="card__name">${esc(p.nombre)}</p><p class="card__price">${p.precio == null ? "Precio por definir" : pesos(p.precio)}</p></div>
           <button class="btn card__add" aria-expanded="false">Agregar</button>
         </div>
       </li>`;
@@ -118,7 +121,14 @@ const CLAVE = "saju-carrito";
 let carrito = [];
 try {
   const guardado = JSON.parse(localStorage.getItem(CLAVE) || "[]");
-  if (Array.isArray(guardado)) carrito = guardado.filter((l) => buscar(l.id) && TALLAS.includes(l.talla) && l.cantidad > 0);
+  // Lo guardado en el navegador puede haber sido alterado: solo se aceptan
+  // prendas que existen, tallas válidas y cantidades enteras dentro del tope.
+  if (Array.isArray(guardado)) {
+    carrito = guardado
+      .filter((l) => l && typeof l.id === "string" && buscar(l.id) && TALLAS.includes(l.talla) && Number.isInteger(l.cantidad) && l.cantidad > 0)
+      .slice(0, 50)
+      .map((l) => ({ id: l.id, talla: l.talla, cantidad: Math.min(l.cantidad, MAX_UNIDADES) }));
+  }
 } catch (_) {}
 
 function guardar() {
@@ -128,7 +138,8 @@ function guardar() {
 
 function agregar(id, talla) {
   const linea = carrito.find((l) => l.id === id && l.talla === talla);
-  if (linea) linea.cantidad++;
+  if (!buscar(id) || !TALLAS.includes(talla)) return;
+  if (linea) linea.cantidad = Math.min(linea.cantidad + 1, MAX_UNIDADES);
   else carrito.push({ id, talla, cantidad: 1 });
   guardar();
   avisar(`${buscar(id).nombre} · talla ${talla} agregado`);
@@ -175,19 +186,19 @@ function pintarCarrito() {
   $("carrito-lista").innerHTML = carrito
     .map((l, i) => {
       const p = buscar(l.id);
-      const mini = p.foto ? `<img src="${p.foto}" alt="">` : SILUETAS[p.cat];
+      const mini = p.foto ? `<img src="${esc(p.foto)}" alt="">` : SILUETAS[p.cat];
       return `<li class="line" data-i="${i}">
         <div class="line__photo">${mini}</div>
         <div class="line__body">
-          <p class="line__name">${p.nombre}</p>
-          <p class="line__meta">Talla ${l.talla} · ${p.precio == null ? "Precio por cotizar" : pesos(p.precio)}</p>
+          <p class="line__name">${esc(p.nombre)}</p>
+          <p class="line__meta">Talla ${esc(l.talla)} ·${p.precio == null ? "Precio por cotizar" : pesos(p.precio)}</p>
           <div class="qty">
             <button data-op="-1" aria-label="Quitar una unidad">−</button>
             <span aria-label="Cantidad">${l.cantidad}</span>
             <button data-op="1" aria-label="Agregar una unidad">+</button>
           </div>
         </div>
-        <button class="line__remove" data-op="x" aria-label="Eliminar ${p.nombre} talla ${l.talla}">✕</button>
+        <button class="line__remove" data-op="x" aria-label="Eliminar ${esc(p.nombre)} talla ${esc(l.talla)}">✕</button>
       </li>`;
     })
     .join("");
@@ -212,7 +223,7 @@ $("carrito-lista").addEventListener("click", (e) => {
   const i = Number(btn.closest(".line").dataset.i);
   if (btn.dataset.op === "x") carrito.splice(i, 1);
   else {
-    carrito[i].cantidad += Number(btn.dataset.op);
+    carrito[i].cantidad = Math.min(carrito[i].cantidad + Number(btn.dataset.op), MAX_UNIDADES);
     if (carrito[i].cantidad <= 0) carrito.splice(i, 1);
   }
   guardar();

@@ -8,6 +8,12 @@
 const WHATSAPP_NUMERO = "";
 const WHATSAPP_LINK = "https://wa.link/e0p7is";
 
+// Si otra web intenta mostrar esta página dentro de un marco (técnica usada
+// para engañar con clics), se sale del marco.
+if (window.top !== window.self) {
+  try { window.top.location = window.self.location.href; } catch (_) { document.documentElement.hidden = true; }
+}
+
 // Devuelve el enlace de WhatsApp para un mensaje dado.
 function enlaceWhatsApp(mensaje) {
   return WHATSAPP_NUMERO
