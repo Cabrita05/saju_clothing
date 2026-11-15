@@ -23,8 +23,34 @@
       <a href="#historia">Historia</a>
       <a href="#pedir">Cómo pedir</a>
     </nav>
-    <a class="btn btn--dark" href="https://wa.link/e0p7is" target="_blank" rel="noopener">Escríbenos</a>
+    <div class="nav__actions">
+      <a class="btn btn--dark nav__write" href="https://wa.link/e0p7is" target="_blank" rel="noopener">Escríbenos</a>
+      <button class="cart-btn" id="abrir-carrito" aria-label="Abrir carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="cart-btn__count" id="carrito-cuenta" hidden>0</span>
+      </button>
+    </div>
   </header>
+
+  <!-- CARRITO -->
+  <dialog class="cart" id="carrito" aria-labelledby="carrito-titulo">
+    <div class="cart__head">
+      <h2 id="carrito-titulo">Tu <em>pedido</em></h2>
+      <button class="cart__close" id="cerrar-carrito" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <ul class="cart__list" id="carrito-lista"></ul>
+    <div class="cart__empty" id="carrito-vacio">
+      <p>Tu carrito está vacío.</p>
+      <a class="btn btn--rose" href="#coleccion" id="carrito-ver">Ver colección</a>
+    </div>
+    <div class="cart__foot" id="carrito-pie">
+      <div class="cart__total"><span>Total estimado</span><strong id="carrito-total"></strong></div>
+      <p class="cart__hint" id="carrito-ayuda"></p>
+      <a class="btn btn--rose btn--lg" id="carrito-enviar" target="_blank" rel="noopener">Cotizar por WhatsApp</a>
+      <button class="cart__clear" id="carrito-vaciar">Vaciar carrito</button>
+    </div>
+  </dialog>
+  <div class="toast" id="aviso" role="status" aria-live="polite"></div>
 
   <main id="inicio">
 
