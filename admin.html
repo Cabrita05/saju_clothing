@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SAJU · Administrador</title>
+  <link rel="icon" href="assets/logo-saju.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+
+  <header class="nav">
+    <a class="nav__brand" href="index.html" aria-label="Saju, ir a la tienda">
+      <img src="assets/logo-saju.png" alt="" width="44" height="44">
+      <span class="badge">Administrador</span>
+    </a>
+    <div class="nav__actions">
+      <span class="admin__who" id="quien" hidden></span>
+      <button class="btn btn--ghost" id="salir" hidden>Salir</button>
+    </div>
+  </header>
+
+  <main class="admin">
+
+    <!-- Falta conectar Supabase -->
+    <section class="admin__card" id="vista-config" hidden>
+      <h1>Falta <em>conectar</em></h1>
+      <p>El panel necesita una base de datos de Supabase. Pasos:</p>
+      <ol class="admin__steps">
+        <li>Crear un proyecto en supabase.com.</li>
+        <li>En <b>SQL Editor</b>, pegar y ejecutar el archivo <code>supabase/schema.sql</code>.</li>
+        <li>En <b>Authentication → Sign In / Providers</b>, desactivar "Allow new users to sign up".</li>
+        <li>Crear el usuario administrador y agregarlo a la tabla <code>admins</code> (está explicado al final del archivo SQL).</li>
+        <li>Copiar la URL del proyecto y la clave pública en <code>config.js</code>.</li>
+      </ol>
+    </section>
+
+    <!-- Inicio de sesión -->
+    <section class="admin__card" id="vista-login" hidden>
+      <h1>Hola <em>de nuevo</em></h1>
+      <form class="form" id="login" novalidate>
+        <div class="field">
+          <label for="correo">Correo</label>
+          <input id="correo" name="correo" type="email" autocomplete="username" required maxlength="120">
+        </div>
+        <div class="field">
+          <label for="clave">Contraseña</label>
+          <input id="clave" name="clave" type="password" autocomplete="current-password" required maxlength="200">
+        </div>
+        <p class="field__error" id="login-error" role="alert" hidden></p>
+        <button class="btn btn--dark btn--lg" type="submit" id="login-boton">Entrar</button>
+      </form>
+    </section>
+
+    <!-- Panel -->
+    <section id="vista-panel" hidden>
+      <div class="admin__head">
+        <h1>Tus <em>prendas</em></h1>
+        <button class="btn btn--rose btn--lg" id="nuevo">+ Agregar prenda</button>
+      </div>
+      <p class="field__error" id="panel-error" role="alert" hidden></p>
+      <div id="lista"></div>
+    </section>
+
+  </main>
+
+  <!-- Formulario de prenda -->
+  <dialog class="sheet" id="hoja" aria-labelledby="hoja-titulo">
+    <form class="form" id="prenda" novalidate>
+      <h2 id="hoja-titulo">Nueva prenda</h2>
+      <div class="field">
+        <label for="p-categoria">Categoría</label>
+        <select id="p-categoria" name="categoria">
+          <option value="pantalones">Pantalones</option>
+          <option value="camisas">Camisas</option>
+          <option value="togas">Togas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="p-nombre">Nombre</label>
+        <input id="p-nombre" name="nombre" type="text" maxlength="80" required>
+      </div>
+      <div class="form__row">
+        <div class="field">
+          <label for="p-precio">Precio en pesos <span class="optional">opcional</span></label>
+          <input id="p-precio" name="precio" type="number" min="0" max="100000000" step="1" inputmode="numeric" placeholder="Ej. 65000">
+        </div>
+        <div class="field">
+          <label for="p-orden">Posición <span class="optional">menor va primero</span></label>
+          <input id="p-orden" name="orden" type="number" min="0" max="9999" step="1" inputmode="numeric" value="0">
+        </div>
+      </div>
+      <div class="field">
+        <label for="p-foto">Foto <span class="optional">JPG, PNG o WebP, máximo 5 MB</span></label>
+        <div class="sheet__photo">
+          <div class="sheet__preview" id="p-vista"></div>
+          <input id="p-foto" name="foto" type="file" accept="image/jpeg,image/png,image/webp">
+        </div>
+      </div>
+      <label class="check"><input type="checkbox" id="p-publicado" name="publicado" checked> <span>Visible en la tienda</span></label>
+      <p class="field__error" id="prenda-error" role="alert" hidden></p>
+      <div class="result__actions">
+        <button class="btn btn--rose btn--lg" type="submit" id="prenda-guardar">Guardar</button>
+        <button class="btn btn--ghost btn--lg" type="button" id="prenda-cancelar">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Confirmación de borrado -->
+  <dialog class="sheet sheet--small" id="confirmar" aria-labelledby="confirmar-titulo">
+    <h2 id="confirmar-titulo">¿Eliminar prenda?</h2>
+    <p id="confirmar-texto"></p>
+    <div class="result__actions">
+      <button class="btn btn--dark btn--lg" id="confirmar-si">Sí, eliminar</button>
+      <button class="btn btn--ghost btn--lg" id="confirmar-no">Cancelar</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="aviso" role="status" aria-live="polite"></div>
+
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.supabase.co; connect-src https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>SAJU · Pijamas hechas en Colombia</title>
   <meta name="description" content="Saju Clothing: pijamas hechas en Colombia. Pantalones, camisas y togas con envíos a todo el país.">
@@ -20,13 +20,14 @@
       <img src="assets/logo-saju.png" alt="" width="44" height="44">
       <span class="badge">Beta</span>
     </a>
-    <nav class="nav__links" aria-label="Principal">
+    <nav class="nav__links" id="menu" aria-label="Principal">
       <a href="#coleccion">Colección</a>
       <a href="#historia">Historia</a>
       <a href="#pedir">Cómo pedir</a>
       <a href="contacto.html">Mayoristas</a>
     </nav>
     <div class="nav__actions">
+      <button class="nav__toggle" aria-label="Abrir men&uacute;" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
       <a class="btn btn--dark nav__write" href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer">Escríbenos</a>
       <button class="cart-btn" id="abrir-carrito" aria-label="Abrir carrito">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>

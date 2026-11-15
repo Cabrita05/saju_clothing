@@ -1,38 +1,46 @@
 // ============================================================
-//  CONFIGURACIÓN — CAMPOS POR LLENAR
+//  CATÁLOGO
+//  Con Supabase conectado (config.js), los productos se administran desde
+//  admin.html y esta lista solo rellena las categorías que aún estén vacías.
+//  Sin Supabase, la página muestra esta lista tal cual.
 // ============================================================
-// El número de WhatsApp se configura en config.js.
-
 // Tallas disponibles. POR CONFIRMAR con Saju.
 const TALLAS = ["S", "M", "L", "XL"];
+const CATEGORIAS = ["pantalones", "camisas", "togas"];
+const MAX_UNIDADES = 99; // tope por prenda, para que nadie arme pedidos absurdos
 
-// Para publicar una prenda: pon su nombre, precio (número, sin puntos) y la
-// ruta de la foto, por ejemplo:
-//   { nombre: "Pantalón rosa", precio: 65000, foto: "assets/pantalon-rosa.jpg" }
-// Con foto: null se muestra el espacio "Muy pronto".
-const PRODUCTOS = {
-  pantalones: [
-    { nombre: "Pantalón 01", precio: null, foto: null },
-    { nombre: "Pantalón 02", precio: null, foto: null },
-    { nombre: "Pantalón 03", precio: null, foto: null },
-    { nombre: "Pantalón 04", precio: null, foto: null },
-    { nombre: "Pantalón 05", precio: null, foto: null },
-  ],
-  camisas: [
-    { nombre: "Camisa 01", precio: null, foto: null },
-    { nombre: "Camisa 02", precio: null, foto: null },
-    { nombre: "Camisa 03", precio: null, foto: null },
-    { nombre: "Camisa 04", precio: null, foto: null },
-    { nombre: "Camisa 05", precio: null, foto: null },
-  ],
-  togas: [
-    { nombre: "Toga 01", precio: null, foto: null },
-    { nombre: "Toga 02", precio: null, foto: null },
-    { nombre: "Toga 03", precio: null, foto: null },
-    { nombre: "Toga 04", precio: null, foto: null },
-    { nombre: "Toga 05", precio: null, foto: null },
-  ],
-};
+const NOMBRES = { pantalones: "Pantalón", camisas: "Camisa", togas: "Toga" };
+// Espacios "Muy pronto": cinco por categoría.
+const PROVISIONALES = CATEGORIAS.flatMap((cat) =>
+  [1, 2, 3, 4, 5].map((n) => ({ id: `${cat}-${n - 1}`, categoria: cat, nombre: `${NOMBRES[cat]} 0${n}`, precio: null, foto: null }))
+);
+
+let catalogo = PROVISIONALES;
+
+// Trae los productos publicados. Si algo falla, la tienda sigue con los provisionales.
+async function cargarCatalogo() {
+  if (!supabaseListo()) return;
+  try {
+    const filas = await Promise.race([
+      supa("/rest/v1/productos?select=id,categoria,nombre,precio,foto_url&publicado=is.true&order=orden.asc,creado.asc&limit=200"),
+      new Promise((_, rechazar) => setTimeout(() => rechazar(new Error("tiempo agotado")), 7000)),
+    ]);
+    if (!Array.isArray(filas)) return;
+    const reales = filas
+      .filter((f) => f && typeof f.id === "string" && CATEGORIAS.includes(f.categoria) && typeof f.nombre === "string")
+      .map((f) => ({
+        id: f.id,
+        categoria: f.categoria,
+        nombre: f.nombre.slice(0, 80),
+        precio: Number.isInteger(f.precio) && f.precio >= 0 ? f.precio : null,
+        foto: fotoSegura(f.foto_url),
+      }));
+    catalogo = CATEGORIAS.flatMap((cat) => {
+      const deCat = reales.filter((p) => p.categoria === cat);
+      return deCat.length ? deCat : PROVISIONALES.filter((p) => p.categoria === cat);
+    });
+  } catch (_) { /* se queda con los provisionales */ }
+}
 
 // Siluetas que ocupan el lugar de la foto mientras llega.
 const SILUETAS = {
@@ -43,29 +51,25 @@ const SILUETAS = {
 
 const $ = (id) => document.getElementById(id);
 const pesos = (n) => "$" + n.toLocaleString("es-CO");
-const MAX_UNIDADES = 99; // tope por prenda, para que nadie arme pedidos absurdos
-// Convierte un texto en HTML seguro antes de insertarlo en la página.
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const buscar = (id) => {
-  const [cat, i] = id.split("-");
-  const p = PRODUCTOS[cat] && PRODUCTOS[cat][Number(i)];
-  return p ? { ...p, cat } : null;
-};
+const buscar = (id) => catalogo.find((p) => p.id === id) || null;
 
 // ============================================================
 //  COLECCIÓN
 // ============================================================
 const track = $("productos");
 const tabs = [...document.querySelectorAll(".tab")];
+let categoriaActual = "pantalones";
 
 function pintarColeccion(cat) {
-  track.innerHTML = PRODUCTOS[cat]
-    .map((p, i) => {
+  categoriaActual = cat;
+  track.innerHTML = catalogo
+    .filter((p) => p.categoria === cat)
+    .map((p) => {
       const foto = p.foto
         ? `<img src="${esc(p.foto)}" alt="${esc(p.nombre)}" loading="lazy">`
         : `${SILUETAS[cat]}<span class="card__chip">Muy pronto</span>`;
       const tallas = TALLAS.map((t) => `<button data-talla="${esc(t)}" aria-label="Agregar talla ${esc(t)}">${esc(t)}</button>`).join("");
-      return `<li class="card" data-id="${cat}-${i}">
+      return `<li class="card${p.foto ? " card--foto" : ""}" data-id="${esc(p.id)}">
         <div class="card__photo">${foto}
           <div class="card__sizes"><span>Elige tu talla</span><div>${tallas}</div></div>
         </div>
@@ -119,17 +123,19 @@ track.addEventListener("click", (e) => {
 // ============================================================
 const CLAVE = "saju-carrito";
 let carrito = [];
-try {
-  const guardado = JSON.parse(localStorage.getItem(CLAVE) || "[]");
-  // Lo guardado en el navegador puede haber sido alterado: solo se aceptan
-  // prendas que existen, tallas válidas y cantidades enteras dentro del tope.
-  if (Array.isArray(guardado)) {
+
+// Lo guardado en el navegador puede haber sido alterado: solo se aceptan
+// prendas que existen, tallas válidas y cantidades enteras dentro del tope.
+function restaurarCarrito() {
+  try {
+    const guardado = JSON.parse(localStorage.getItem(CLAVE) || "[]");
+    if (!Array.isArray(guardado)) return;
     carrito = guardado
       .filter((l) => l && typeof l.id === "string" && buscar(l.id) && TALLAS.includes(l.talla) && Number.isInteger(l.cantidad) && l.cantidad > 0)
       .slice(0, 50)
       .map((l) => ({ id: l.id, talla: l.talla, cantidad: Math.min(l.cantidad, MAX_UNIDADES) }));
-  }
-} catch (_) {}
+  } catch (_) {}
+}
 
 function guardar() {
   try { localStorage.setItem(CLAVE, JSON.stringify(carrito)); } catch (_) {}
@@ -137,8 +143,8 @@ function guardar() {
 }
 
 function agregar(id, talla) {
-  const linea = carrito.find((l) => l.id === id && l.talla === talla);
   if (!buscar(id) || !TALLAS.includes(talla)) return;
+  const linea = carrito.find((l) => l.id === id && l.talla === talla);
   if (linea) linea.cantidad = Math.min(linea.cantidad + 1, MAX_UNIDADES);
   else carrito.push({ id, talla, cantidad: 1 });
   guardar();
@@ -186,12 +192,12 @@ function pintarCarrito() {
   $("carrito-lista").innerHTML = carrito
     .map((l, i) => {
       const p = buscar(l.id);
-      const mini = p.foto ? `<img src="${esc(p.foto)}" alt="">` : SILUETAS[p.cat];
+      const mini = p.foto ? `<img src="${esc(p.foto)}" alt="">` : SILUETAS[p.categoria];
       return `<li class="line" data-i="${i}">
         <div class="line__photo">${mini}</div>
         <div class="line__body">
           <p class="line__name">${esc(p.nombre)}</p>
-          <p class="line__meta">Talla ${esc(l.talla)} ·${p.precio == null ? "Precio por cotizar" : pesos(p.precio)}</p>
+          <p class="line__meta">Talla ${esc(l.talla)} · ${p.precio == null ? "Precio por cotizar" : pesos(p.precio)}</p>
           <div class="qty">
             <button data-op="-1" aria-label="Quitar una unidad">−</button>
             <span aria-label="Cantidad">${l.cantidad}</span>
@@ -246,13 +252,20 @@ function avisar(texto) {
   relojAviso = setTimeout(() => aviso.classList.remove("is-on"), 2200);
 }
 
-pintarColeccion("pantalones");
+// Arranque: se pinta de inmediato con lo provisional y se actualiza al llegar
+// el catálogo en línea. El carrito se restaura contra el catálogo definitivo.
+pintarColeccion(categoriaActual);
 pintarCarrito();
+cargarCatalogo().then(() => {
+  pintarColeccion(categoriaActual);
+  restaurarCarrito();
+  pintarCarrito();
+});
 
 // ============================================================
 //  Aparición suave de las secciones al hacer scroll
 // ============================================================
-const revelar = document.querySelectorAll(".collection__head, .carousel, .story__text, .story__collage, .steps h2, .steps__list li, .footer h2");
+const revelar = document.querySelectorAll(".collection__head, .carousel, .story__text, .story__collage, .steps h2, .steps__list li, .wholesale, .footer h2");
 if ("IntersectionObserver" in window) {
   const io = new IntersectionObserver(
     (entradas) => entradas.forEach((e) => e.isIntersecting && (e.target.classList.add("is-in"), io.unobserve(e.target))),
