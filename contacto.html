@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SAJU · Pedidos al por mayor y personalizados</title>
+  <meta name="description" content="Saju Clothing como proveedor: pijamas al por mayor y pedidos personalizados, hechos en Colombia.">
+  <link rel="icon" href="assets/logo-saju.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="nav">
+    <a class="nav__brand" href="index.html" aria-label="Saju, inicio">
+      <img src="assets/logo-saju.png" alt="" width="44" height="44">
+      <span class="badge">Beta</span>
+    </a>
+    <nav class="nav__links" aria-label="Principal">
+      <a href="index.html#coleccion">Colección</a>
+      <a href="index.html#historia">Historia</a>
+      <a href="index.html#pedir">Cómo pedir</a>
+      <a href="contacto.html" aria-current="page">Mayoristas</a>
+    </nav>
+    <a class="btn btn--dark" href="index.html">← Tienda</a>
+  </header>
+
+  <main class="contact">
+
+    <section class="contact__intro">
+      <p class="eyebrow eyebrow--dark">Al por mayor y personalizados</p>
+      <h1>Vestimos <em>tu tienda</em></h1>
+      <p class="contact__lead">Hacemos pijamas en Colombia para boutiques, tiendas en línea, regalos empresariales y eventos. Cuéntanos qué necesitas y te enviamos una cotización.</p>
+
+      <!-- CAMPOS POR LLENAR: condiciones reales para mayoristas -->
+      <ul class="terms">
+        <li><b>01</b><div><h3>Pedido mínimo</h3><p class="draft">Cantidad mínima por referencia.</p></div><span class="tag">Por llenar</span></li>
+        <li><b>02</b><div><h3>Precios por volumen</h3><p class="draft">Descuentos según la cantidad.</p></div><span class="tag">Por llenar</span></li>
+        <li><b>03</b><div><h3>Personalización</h3><p class="draft">Telas, colores, tallas o marquilla propia.</p></div><span class="tag">Por llenar</span></li>
+        <li><b>04</b><div><h3>Tiempos de entrega</h3><p class="draft">Días de producción y envío.</p></div><span class="tag">Por llenar</span></li>
+      </ul>
+    </section>
+
+    <section class="contact__panel">
+      <form class="form" id="solicitud" novalidate>
+        <h2>Cuéntanos tu <em>pedido</em></h2>
+
+        <fieldset class="field">
+          <legend>¿Qué tipo de pedido es?</legend>
+          <div class="chips">
+            <label><input type="radio" name="tipo" value="Al por mayor" checked><span>Al por mayor</span></label>
+            <label><input type="radio" name="tipo" value="Personalizado"><span>Personalizado</span></label>
+            <label><input type="radio" name="tipo" value="Al por mayor y personalizado"><span>Ambos</span></label>
+          </div>
+        </fieldset>
+
+        <div class="form__row">
+          <div class="field">
+            <label for="nombre">Tu nombre</label>
+            <input id="nombre" name="nombre" type="text" autocomplete="name" required aria-describedby="nombre-error">
+            <p class="field__error" id="nombre-error" hidden>Escribe tu nombre para saber con quién hablamos.</p>
+          </div>
+          <div class="field">
+            <label for="negocio">Tienda o negocio <span class="optional">opcional</span></label>
+            <input id="negocio" name="negocio" type="text" autocomplete="organization">
+          </div>
+        </div>
+
+        <div class="form__row">
+          <div class="field">
+            <label for="ciudad">Ciudad de entrega</label>
+            <input id="ciudad" name="ciudad" type="text" autocomplete="address-level2" required aria-describedby="ciudad-error">
+            <p class="field__error" id="ciudad-error" hidden>Dinos la ciudad para calcular el envío.</p>
+          </div>
+          <div class="field">
+            <label for="cantidad">Cantidad aproximada</label>
+            <input id="cantidad" name="cantidad" type="number" min="1" inputmode="numeric" placeholder="Ej. 24" required aria-describedby="cantidad-error">
+            <p class="field__error" id="cantidad-error" hidden>Indica cuántas prendas necesitas, aunque sea un aproximado.</p>
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend>Prendas de interés</legend>
+          <div class="chips">
+            <label><input type="checkbox" name="prendas" value="Pantalones"><span>Pantalones</span></label>
+            <label><input type="checkbox" name="prendas" value="Camisas"><span>Camisas</span></label>
+            <label><input type="checkbox" name="prendas" value="Togas"><span>Togas</span></label>
+            <label><input type="checkbox" name="prendas" value="Conjuntos"><span>Conjuntos</span></label>
+          </div>
+          <p class="field__error" id="prendas-error" hidden>Elige al menos una prenda.</p>
+        </fieldset>
+
+        <div class="field">
+          <label for="detalles">Detalles <span class="optional">opcional</span></label>
+          <textarea id="detalles" name="detalles" rows="4" placeholder="Tallas, colores, telas, fecha en que lo necesitas, si quieres marquilla propia…"></textarea>
+        </div>
+
+        <button class="btn btn--rose btn--lg" type="submit">Preparar solicitud</button>
+        <p class="form__note">No guardamos tus datos: armamos un mensaje para que lo envíes por WhatsApp.</p>
+      </form>
+
+      <div class="result" id="resultado" hidden tabindex="-1">
+        <p class="footer__script">¡lista!</p>
+        <h2>Tu solicitud</h2>
+        <pre class="result__msg" id="resultado-texto"></pre>
+        <p class="form__note" id="resultado-ayuda"></p>
+        <div class="result__actions">
+          <a class="btn btn--rose btn--lg" id="resultado-enviar" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+          <button class="btn btn--ghost btn--lg" id="resultado-copiar" type="button">Copiar texto</button>
+        </div>
+        <button class="cart__clear" id="resultado-editar" type="button">Editar solicitud</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer footer--slim">
+    <p class="footer__small">SAJU · Hecho en Colombia · Versión beta · <a href="index.html">Volver a la tienda</a></p>
+  </footer>
+  <div class="toast" id="aviso" role="status" aria-live="polite"></div>
+
+  <script src="config.js"></script>
+  <script src="contacto.js"></script>
+</body>
+</html>

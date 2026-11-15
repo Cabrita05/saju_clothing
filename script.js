@@ -1,12 +1,7 @@
 // ============================================================
 //  CONFIGURACIÓN — CAMPOS POR LLENAR
 // ============================================================
-// POR LLENAR: número de WhatsApp del negocio, con indicativo del país y sin +
-// ni espacios (ejemplo: "573001234567"). Con el número puesto, el botón del
-// carrito abre el chat con el pedido ya escrito. Mientras esté vacío, abre el
-// link general y copia el pedido para que el cliente lo pegue en el chat.
-const WHATSAPP_NUMERO = "";
-const WHATSAPP_LINK = "https://wa.link/e0p7is";
+// El número de WhatsApp se configura en config.js.
 
 // Tallas disponibles. POR CONFIRMAR con Saju.
 const TALLAS = ["S", "M", "L", "XL"];
@@ -199,9 +194,7 @@ function pintarCarrito() {
 
   const total = totalCarrito();
   $("carrito-total").textContent = total == null ? "Por cotizar" : pesos(total);
-  $("carrito-enviar").href = WHATSAPP_NUMERO
-    ? `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensajeWhatsApp())}`
-    : WHATSAPP_LINK;
+  $("carrito-enviar").href = enlaceWhatsApp(mensajeWhatsApp());
   $("carrito-ayuda").textContent = WHATSAPP_NUMERO
     ? "Sin pagos en línea: te confirmamos disponibilidad, precio final y envío por WhatsApp."
     : "Al tocar el botón copiamos tu pedido: pégalo en el chat de WhatsApp y te confirmamos disponibilidad, precio y envío.";
