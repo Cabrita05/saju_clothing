@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.supabase.co; connect-src https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.supabase.co; connect-src https://*.supabase.co; media-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>SAJU · Pijamas hechas en Colombia</title>
   <meta name="description" content="Saju Clothing: pijamas hechas en Colombia. Pantalones, camisas y togas con envíos a todo el país.">
@@ -118,6 +118,25 @@
         <div class="slot slot--b" data-slot="Detalle de tela"><span>Detalle de tela</span></div>
         <div class="slot slot--c" data-slot="Retrato"><span>Retrato</span></div>
         <svg class="story__star" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 2l7 23 23 7-23 7-7 23-7-23-23-7 23-7z" fill="currentColor"/></svg>
+      </div>
+
+      <!-- VIDEO DE LA FUNDADORA -->
+      <div class="founder">
+        <!-- CAMPO POR LLENAR: video de la fundadora. Guardar el archivo en assets/
+             (MP4, idealmente vertical y de menos de un minuto) y reemplazar el
+             contenido de .founder__frame por:
+             <video src="assets/fundadora.mp4" controls playsinline preload="metadata"></video> -->
+        <div class="founder__frame slot" data-slot="Video de la fundadora">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="2"/><path d="M26 20l18 12-18 12z" fill="currentColor"/></svg>
+          <span>Video de la fundadora<br>por llegar</span>
+        </div>
+        <div class="founder__text">
+          <p class="eyebrow eyebrow--dark">En video</p>
+          <h3>Conoce a <em>nuestra fundadora</em></h3>
+          <!-- CAMPO POR LLENAR: frase que acompaña el video -->
+          <p class="draft">Aquí va una frase corta que acompañe el video: quién es, desde cuándo cose y qué quiere que sientas al ponerte una pijama Saju.</p>
+          <span class="tag">Video por llenar</span>
+        </div>
       </div>
     </section>
 

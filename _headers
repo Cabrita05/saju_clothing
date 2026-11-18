@@ -1,7 +1,7 @@
 # Cabeceras de seguridad. Las aplica Netlify (y Cloudflare Pages).
 # GitHub Pages las ignora: allí solo actúa la política escrita en cada HTML.
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src https://*.supabase.co; media-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
