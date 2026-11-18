@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.supabase.co; connect-src https://*.supabase.co; media-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Prenda · SAJU</title>
+  <meta name="description" content="Pijamas Saju hechas en Colombia: tallas, precio y guía de medidas.">
+  <link rel="icon" href="assets/logo-saju.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="nav">
+    <a class="nav__brand" href="index.html" aria-label="Saju, inicio">
+      <img src="assets/logo-saju.png" alt="" width="44" height="44">
+    </a>
+    <nav class="nav__links" id="menu" aria-label="Principal">
+      <a href="index.html#coleccion">Colección</a>
+      <a href="index.html#historia">Historia</a>
+      <a href="index.html#pedir">Cómo pedir</a>
+      <a href="index.html#preguntas">Preguntas</a>
+      <a href="contacto.html">Mayoristas</a>
+    </nav>
+    <div class="nav__actions">
+      <button class="nav__toggle" aria-label="Abrir men&uacute;" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+      <a class="btn btn--dark nav__write" href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer">Escríbenos</a>
+      <button class="cart-btn" id="abrir-carrito" aria-label="Abrir carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="cart-btn__count" id="carrito-cuenta" hidden>0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- CARRITO -->
+  <dialog class="cart" id="carrito" aria-labelledby="carrito-titulo">
+    <div class="cart__head">
+      <h2 id="carrito-titulo">Tu <em>pedido</em></h2>
+      <button class="cart__close" id="cerrar-carrito" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <ul class="cart__list" id="carrito-lista"></ul>
+    <div class="cart__empty" id="carrito-vacio">
+      <p>Tu carrito está vacío.</p>
+      <a class="btn btn--rose" href="index.html#coleccion" id="carrito-ver">Ver colección</a>
+    </div>
+    <div class="cart__foot" id="carrito-pie">
+      <div class="cart__total"><span>Total estimado</span><strong id="carrito-total"></strong></div>
+      <p class="cart__hint" id="carrito-ayuda"></p>
+      <a class="btn btn--rose btn--lg" id="carrito-enviar" target="_blank" rel="noopener noreferrer">Cotizar por WhatsApp</a>
+      <button class="cart__clear" id="carrito-vaciar">Vaciar carrito</button>
+    </div>
+    <a class="cart__clear cart__sizes-link" href="#guia" data-cerrar-carrito>¿Dudas con la talla? Ver guía de tallas</a>
+  </dialog>
+  <div class="toast" id="aviso" role="status" aria-live="polite"></div>
+
+  <main class="pdp" id="prenda">
+
+    <nav class="pdp__crumbs" aria-label="Ruta">
+      <a href="index.html">Inicio</a> <span aria-hidden="true">/</span>
+      <a href="index.html#coleccion" id="p-categoria-enlace">Colección</a> <span aria-hidden="true">/</span>
+      <span id="p-ruta-nombre" aria-current="page">Prenda</span>
+    </nav>
+
+    <!-- Se muestra si el enlace apunta a una prenda que no existe -->
+    <section class="pdp__missing" id="p-no-existe" hidden>
+      <h1>No encontramos <em>esta prenda</em></h1>
+      <p>Puede que ya no esté disponible o que el enlace esté incompleto.</p>
+      <a class="btn btn--rose btn--lg" href="index.html#coleccion">Ver la colección</a>
+    </section>
+
+    <div class="pdp__main" id="p-contenido">
+      <div class="pdp__media">
+        <div class="pdp__photo" id="p-foto"></div>
+      </div>
+
+      <div class="pdp__info">
+        <p class="eyebrow eyebrow--dark" id="p-categoria">Colección</p>
+        <h1 id="p-nombre">Cargando…</h1>
+        <p class="pdp__price" id="p-precio"></p>
+
+        <div class="pdp__desc" id="p-descripcion"></div>
+
+        <fieldset class="pdp__sizes">
+          <legend>Elige tu talla <a href="#guia" class="pdp__guide-link">Guía de tallas</a></legend>
+          <div class="pdp__size-list" id="p-tallas"></div>
+          <p class="field__error" id="p-talla-error" role="alert" hidden>Elige una talla para agregarla al carrito.</p>
+        </fieldset>
+
+        <div class="pdp__buy">
+          <div class="qty qty--lg" aria-label="Cantidad">
+            <button type="button" id="p-menos" aria-label="Quitar una unidad">−</button>
+            <span id="p-cantidad" aria-live="polite">1</span>
+            <button type="button" id="p-mas" aria-label="Agregar una unidad">+</button>
+          </div>
+          <button class="btn btn--rose btn--lg pdp__add" id="p-agregar">Agregar al carrito</button>
+        </div>
+        <a class="pdp__ask" id="p-preguntar" target="_blank" rel="noopener noreferrer">Preguntar por esta prenda en WhatsApp</a>
+
+        <div class="pdp__details">
+          <details name="detalle" open>
+            <summary>Envíos</summary>
+            <p>Enviamos a toda Colombia. Te confirmamos el tiempo y el costo del envío por WhatsApp al cotizar tu pedido.</p>
+          </details>
+          <details name="detalle">
+            <summary>Tela y cuidados</summary>
+            <!-- CAMPO POR LLENAR: tela y cuidados -->
+            <p class="draft">Composición de la tela e instrucciones de lavado: por definir.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUÍA DE TALLAS (las medidas se llenan en tienda.js, GUIA_MEDIDAS) -->
+    <section class="pdp__guide" id="guia" aria-labelledby="guia-titulo">
+      <div class="pdp__guide-text">
+        <p class="eyebrow eyebrow--dark">Encuentra tu talla</p>
+        <h2 id="guia-titulo">Guía de <em>tallas</em></h2>
+        <p class="sizes__intro">Medidas del cuerpo en centímetros. Si estás entre dos tallas, elige la más grande para dormir cómoda.</p>
+        <div class="sizes__how">
+          <h3>Cómo medirte</h3>
+          <ul>
+            <li><b>Busto:</b> alrededor de la parte más llena del pecho.</li>
+            <li><b>Cintura:</b> alrededor de la parte más angosta de la cintura.</li>
+            <li><b>Cadera:</b> alrededor de la parte más ancha de la cadera.</li>
+            <li><b>Largo pantalón:</b> desde la cintura hasta el tobillo, por fuera de la pierna.</li>
+          </ul>
+        </div>
+        <p class="sizes__help">¿Sigues con dudas? <a href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer">Escríbenos y te ayudamos a elegir</a>.</p>
+      </div>
+      <div class="pdp__guide-table">
+        <div class="sizes__scroll" data-tabla-tallas></div>
+        <span class="tag" data-tallas-pendientes>Medidas por llenar</span>
+      </div>
+    </section>
+
+    <!-- OTRAS PRENDAS -->
+    <section class="pdp__more" aria-labelledby="mas-titulo">
+      <h2 id="mas-titulo">También te puede <em>gustar</em></h2>
+      <ul class="pdp__more-list" id="p-relacionadas"></ul>
+    </section>
+
+  </main>
+
+  <footer class="footer footer--slim">
+    <p class="footer__small">SAJU · Hecho en Colombia · <a href="index.html">Volver a la tienda</a></p>
+  </footer>
+
+  <a class="wa-float" href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer" aria-label="Escríbenos por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 1a3.5 3.5 0 0 1-2-2l1-1-1-2z"/></svg>
+    <span>Escríbenos</span>
+  </a>
+
+  <script src="config.js"></script>
+  <script src="tienda.js"></script>
+  <script src="producto.js"></script>
+</body>
+</html>

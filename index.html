@@ -18,12 +18,12 @@
   <header class="nav">
     <a class="nav__brand" href="#inicio" aria-label="Saju, inicio">
       <img src="assets/logo-saju.png" alt="" width="44" height="44">
-      <span class="badge">Beta</span>
     </a>
     <nav class="nav__links" id="menu" aria-label="Principal">
       <a href="#coleccion">Colección</a>
       <a href="#historia">Historia</a>
       <a href="#pedir">Cómo pedir</a>
+      <a href="#preguntas">Preguntas</a>
       <a href="contacto.html">Mayoristas</a>
     </nav>
     <div class="nav__actions">
@@ -53,6 +53,29 @@
       <a class="btn btn--rose btn--lg" id="carrito-enviar" target="_blank" rel="noopener noreferrer">Cotizar por WhatsApp</a>
       <button class="cart__clear" id="carrito-vaciar">Vaciar carrito</button>
     </div>
+    <button class="cart__clear cart__sizes-link" data-abrir-tallas>¿Dudas con la talla? Ver guía de tallas</button>
+  </dialog>
+
+  <!-- GUÍA DE TALLAS -->
+  <dialog class="sheet sizes" id="tallas" aria-labelledby="tallas-titulo">
+    <div class="sizes__head">
+      <h2 id="tallas-titulo">Guía de <em>tallas</em></h2>
+      <button class="cart__close" data-cerrar-tallas aria-label="Cerrar guía de tallas">✕</button>
+    </div>
+    <p class="sizes__intro">Medidas del cuerpo en centímetros. Si estás entre dos tallas, elige la más grande para dormir cómoda.</p>
+    <!-- Las medidas se llenan en tienda.js (GUIA_MEDIDAS). -->
+    <div class="sizes__scroll" data-tabla-tallas></div>
+    <span class="tag" data-tallas-pendientes>Medidas por llenar</span>
+    <div class="sizes__how">
+      <h3>Cómo medirte</h3>
+      <ul>
+        <li><b>Busto:</b> alrededor de la parte más llena del pecho.</li>
+        <li><b>Cintura:</b> alrededor de la parte más angosta de la cintura.</li>
+        <li><b>Cadera:</b> alrededor de la parte más ancha de la cadera.</li>
+        <li><b>Largo pantalón:</b> desde la cintura hasta el tobillo, por fuera de la pierna.</li>
+      </ul>
+    </div>
+    <p class="sizes__help">¿Sigues con dudas? <a href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer">Escríbenos y te ayudamos a elegir</a>.</p>
   </dialog>
   <div class="toast" id="aviso" role="status" aria-live="polite"></div>
 
@@ -150,6 +173,51 @@
       </ol>
     </section>
 
+    <!-- PREGUNTAS FRECUENTES -->
+    <section class="faq" id="preguntas">
+      <div class="faq__intro">
+        <p class="eyebrow eyebrow--dark">Preguntas frecuentes</p>
+        <h2>Te <em>contamos</em></h2>
+        <p>¿No encuentras tu respuesta? <a href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer">Escríbenos por WhatsApp</a>.</p>
+      </div>
+      <!-- CAMPOS POR LLENAR: las respuestas marcadas "Respuesta por llenar" las debe confirmar Saju. -->
+      <div class="faq__list">
+        <details name="faq" open>
+          <summary>¿Cómo hago mi pedido?</summary>
+          <p>Agrega las prendas al carrito con tu talla y toca "Cotizar por WhatsApp". Te confirmamos disponibilidad, precio final y envío por chat.</p>
+        </details>
+        <details name="faq">
+          <summary>¿Hacen envíos a todo el país?</summary>
+          <p>Sí, enviamos a toda Colombia.</p>
+          <p class="draft">Tiempo de entrega y costo del envío: por definir.</p>
+          <span class="tag">Respuesta por llenar</span>
+        </details>
+        <details name="faq">
+          <summary>¿Cómo sé cuál es mi talla?</summary>
+          <p>Revisa nuestra <button class="faq__link" data-abrir-tallas>guía de tallas</button> con las medidas de cada talla. Si estás entre dos, te recomendamos la más grande.</p>
+        </details>
+        <details name="faq">
+          <summary>¿Cómo puedo pagar?</summary>
+          <p class="draft">Medios de pago aceptados (transferencia, Nequi, Daviplata, contraentrega…): por definir.</p>
+          <span class="tag">Respuesta por llenar</span>
+        </details>
+        <details name="faq">
+          <summary>¿Puedo cambiar la talla?</summary>
+          <p class="draft">Política de cambios: plazo, condiciones de la prenda y quién paga el envío: por definir.</p>
+          <span class="tag">Respuesta por llenar</span>
+        </details>
+        <details name="faq">
+          <summary>¿Cómo cuido mi pijama?</summary>
+          <p class="draft">Instrucciones de lavado y secado según la tela: por definir.</p>
+          <span class="tag">Respuesta por llenar</span>
+        </details>
+        <details name="faq">
+          <summary>¿Venden al por mayor?</summary>
+          <p>Sí. Hacemos pedidos al por mayor y personalizados para tiendas, regalos y eventos. <a href="contacto.html">Cuéntanos tu pedido aquí</a>.</p>
+        </details>
+      </div>
+    </section>
+
     <!-- MAYORISTAS -->
     <section class="wholesale">
       <div>
@@ -171,10 +239,16 @@
       <a class="btn btn--rose btn--lg" href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp</a>
       <a class="btn btn--ghost btn--lg" href="https://www.instagram.com/saju_clothing" target="_blank" rel="noopener noreferrer">@saju_clothing</a>
     </div>
-    <p class="footer__small">SAJU · Hecho en Colombia · Versión beta</p>
+    <p class="footer__small">SAJU · Hecho en Colombia</p>
   </footer>
 
+  <a class="wa-float" href="https://wa.link/e0p7is" target="_blank" rel="noopener noreferrer" aria-label="Escríbenos por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 1a3.5 3.5 0 0 1-2-2l1-1-1-2z"/></svg>
+    <span>Escríbenos</span>
+  </a>
+
   <script src="config.js"></script>
+  <script src="tienda.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -186,6 +186,7 @@ function abrirHoja(p) {
   if (p) {
     form.categoria.value = p.categoria;
     form.nombre.value = p.nombre;
+    form.descripcion.value = typeof p.descripcion === "string" ? p.descripcion : "";
     form.precio.value = Number.isInteger(p.precio) ? p.precio : "";
     form.orden.value = Number.isInteger(p.orden) ? p.orden : 0;
     form.publicado.checked = !!p.publicado;
@@ -231,6 +232,7 @@ async function borrarFoto(url, t) {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const nombre = form.nombre.value.replace(/\s+/g, " ").trim().slice(0, 80);
+  const descripcion = form.descripcion.value.trim().slice(0, 600) || null;
   const precioTxt = form.precio.value.trim();
   const precio = precioTxt === "" ? null : Number(precioTxt);
   const orden = Number(form.orden.value || 0);
@@ -246,7 +248,7 @@ form.addEventListener("submit", async (e) => {
   $("prenda-guardar").disabled = true;
   try {
     const t = await token();
-    const datos = { categoria: form.categoria.value, nombre, precio, orden, publicado: form.publicado.checked };
+    const datos = { categoria: form.categoria.value, nombre, descripcion, precio, orden, publicado: form.publicado.checked };
     const fotoAnterior = editando ? editando.foto_url : null;
 
     if (archivo) {

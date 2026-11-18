@@ -41,10 +41,14 @@ create table if not exists public.productos (
   nombre    text not null check (char_length(nombre) between 1 and 80),
   precio    integer check (precio is null or (precio >= 0 and precio <= 100000000)),
   foto_url  text check (foto_url is null or char_length(foto_url) <= 500),
+  descripcion text check (descripcion is null or char_length(descripcion) <= 600),
   publicado boolean not null default true,
   orden     integer not null default 0,
   creado    timestamptz not null default now()
 );
+-- Por si la tabla ya existía sin descripción.
+alter table public.productos add column if not exists descripcion text
+  check (descripcion is null or char_length(descripcion) <= 600);
 create index if not exists productos_categoria_orden on public.productos (categoria, orden);
 alter table public.productos enable row level security;
 
